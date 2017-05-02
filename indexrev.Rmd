@@ -1,0 +1,62 @@
+---
+title: "Sam Andrews"
+output:
+  html_notebook: default
+  html_document: default
+---
+
+```{r load packages,message=FALSE,cache=TRUE,echo=FALSE}
+require(tidyverse)
+require(sf)
+require(leaflet)
+
+```
+
+
+I am working on 1 CHONe project, because I am not as awesome as Remi.
+
+
+
+```{r prepare spatial data,cache=TRUE,echo=FALSE}
+# set standard projection
+projll <- "+proj=longlat +datum=WGS84"
+
+# set Atlantic LTRANS connectivity project
+bcbbox <- c(-70.88808,39.89707,-47.28724,53.56291)
+Atlantic <- cbind(
+            c(bcbbox[1],bcbbox[3],bcbbox[3],bcbbox[1],bcbbox[1]),
+            c(bcbbox[2],bcbbox[2],bcbbox[4],bcbbox[4],bcbbox[2])
+        ) %>% 
+    list() %>%                  # put that matrix in a list
+    st_polygon() %>%            # put that list in a simple features polygon
+    st_sfc(crs = projll) %>%  # put that polygon into a simple features column and give projection info
+    st_sf(name="Sam Andrews",
+         description="Atlantic Region",
+         CHONeProject="1.1.1",
+         geometry=.)%>%    # finally make it an sf object
+    st_cast("MULTIPOLYGON")
+
+sites <- rbind(Atlantic)
+
+
+```
+
+Here's the map:
+
+```{r,echo=FALSE}
+cols <- c("red")
+leaflet(sites) %>%
+    addTiles() %>% 
+    addPolygons(group = ~description,
+                color = cols) %>%
+     addLegend("topright", 
+               colors = cols,
+               labels = unique(sites$description))
+    
+```
+
+And I don't have any data :(
+
+But I will
+
+
